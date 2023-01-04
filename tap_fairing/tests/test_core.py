@@ -1,14 +1,11 @@
 """Tests standard tap features using the built-in SDK tests library."""
 
-import datetime
-
 from singer_sdk.testing import get_standard_tap_tests
 
 from tap_fairing.tap import Tapfairing
 
 SAMPLE_CONFIG = {
-    "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-    # TODO: Initialize minimal tap config
+    "secret_token": "supersecret"
 }
 
 
