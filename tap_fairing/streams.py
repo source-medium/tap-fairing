@@ -445,7 +445,7 @@ class QuestionsStream(FairingStream):
             description="Either always or once. Indicates how often this question should be asked.",
         ),
         th.Property(
-            "id", th.NumberType, description="The unique identifier of the question."
+            "id", th.IntegerType, description="The unique identifier of the question."
         ),
         th.Property(
             "inserted_at",
@@ -454,7 +454,7 @@ class QuestionsStream(FairingStream):
         ),
         th.Property(
             "max_responses",
-            th.NumberType,
+            th.IntegerType,
             description="If the question type is multi_response, this is the maximum number of responses that can be provided for this question per customer.",
         ),
         th.Property(
@@ -491,12 +491,12 @@ class QuestionsStream(FairingStream):
                             ),
                             th.Property(
                                 "id",
-                                th.NumberType,
+                                th.IntegerType,
                                 description="The unique identifier of the question. ",
                             ),
                             th.Property(
                                 "max_responses",
-                                th.NumberType,
+                                th.IntegerType,
                                 description="If the question type is multi_response, this is the maximum number of responses that can be provided for this question per customer. ",
                             ),
                             th.Property(
@@ -520,7 +520,7 @@ class QuestionsStream(FairingStream):
                                     th.ObjectType(
                                         th.Property(
                                             "id",
-                                            th.NumberType,
+                                            th.IntegerType,
                                             description="The unique identifier of the response. ",
                                         ),
                                         th.Property(
@@ -547,7 +547,7 @@ class QuestionsStream(FairingStream):
                     ),
                     th.Property(
                         "id",
-                        th.NumberType,
+                        th.IntegerType,
                         description="The unique identifier of the response. ",
                     ),
                     th.Property(
