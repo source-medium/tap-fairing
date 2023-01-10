@@ -445,7 +445,7 @@ class QuestionsStream(FairingStream):
             description="Either always or once. Indicates how often this question should be asked.",
         ),
         th.Property(
-            "id", th.IntegerType, description="The unique identifier of the question."
+            "id", th.StringType, description="The unique identifier of the question."
         ),
         th.Property(
             "inserted_at",
@@ -491,7 +491,7 @@ class QuestionsStream(FairingStream):
                             ),
                             th.Property(
                                 "id",
-                                th.IntegerType,
+                                th.StringType,
                                 description="The unique identifier of the question. ",
                             ),
                             th.Property(
@@ -520,7 +520,7 @@ class QuestionsStream(FairingStream):
                                     th.ObjectType(
                                         th.Property(
                                             "id",
-                                            th.IntegerType,
+                                            th.StringType,
                                             description="The unique identifier of the response. ",
                                         ),
                                         th.Property(
@@ -547,7 +547,7 @@ class QuestionsStream(FairingStream):
                     ),
                     th.Property(
                         "id",
-                        th.IntegerType,
+                        th.StringType,
                         description="The unique identifier of the response. ",
                     ),
                     th.Property(
@@ -575,3 +575,32 @@ class QuestionsStream(FairingStream):
             description="ISO 8601 timestamp of the time the question was last updated.",
         ),
     ).to_dict()
+
+    def post_process(self, row: Dict, context: Optional[dict] = None) -> Optional[dict]:
+        """Fairing questions: transform the id types to strings
+
+        As needed, append or transform raw data to match expected structure.
+
+        Optional. This method gives developers an opportunity to "clean up" the results
+        prior to returning records to the downstream tap - for instance: cleaning,
+        renaming, or appending properties to the raw record result returned from the
+        API.
+
+        Developers may also return `None` from this method to filter out
+        invalid or not-applicable records from the stream.
+
+        Args:
+            row: Individual record in the stream.
+            context: Stream partition or context dictionary.
+
+        Returns:
+            The resulting record dict, or `None` if the record should be excluded.
+        """
+        row["id"] = str(row["id"])
+        for resp in row["responses"]:
+            resp["id"] = str(resp["id"])
+            if "clarification_question" in resp and resp["clarification_question"]:
+                resp["clarification_question"]["id"] = str(resp["clarification_question"]["id"])
+                for clarification_resp in resp["clarification_question"]["responses"]:
+                    clarification_resp["id"] = str(clarification_resp["id"])
+        return row
