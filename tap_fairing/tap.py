@@ -6,9 +6,11 @@ from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_fairing.streams import (
     ResponsesStream,
+    QuestionsStream,
 )
 
 STREAM_TYPES = [
+    QuestionsStream,
     ResponsesStream,
 ]
 

@@ -421,3 +421,157 @@ class ResponsesStream(FairingStream):
         data: List = response.json()["data"]
         data.reverse()
         yield from data
+
+
+class QuestionsStream(FairingStream):
+    name = "questions"
+    path = "/questions"
+    primary_keys = ["id"]
+
+    schema = th.PropertiesList(
+        th.Property(
+            "allow_other",
+            th.BooleanType,
+            description="If true, the question allows a free-text responses as an alternative to the provided list of responses.",
+        ),
+        th.Property(
+            "customer_type",
+            th.StringType,
+            description="One of everyone, new, or returning. Indicates which customers should be asked this question.",
+        ),
+        th.Property(
+            "frequency_type",
+            th.StringType,
+            description="Either always or once. Indicates how often this question should be asked.",
+        ),
+        th.Property(
+            "id", th.NumberType, description="The unique identifier of the question."
+        ),
+        th.Property(
+            "inserted_at",
+            th.StringType,
+            description="ISO 8601 timestamp of the time the question was created.",
+        ),
+        th.Property(
+            "max_responses",
+            th.NumberType,
+            description="If the question type is multi_response, this is the maximum number of responses that can be provided for this question per customer.",
+        ),
+        th.Property(
+            "other_placeholder",
+            th.StringType,
+            description='If the question allows free text responses ("Other"), this is the placeholder text that displays in the text input in the question form.',
+        ),
+        th.Property(
+            "prompt",
+            th.StringType,
+            description="The text value of the question that is presented to customers.",
+        ),
+        th.Property(
+            "published_at",
+            th.StringType,
+            description="ISO 8601 timestamp of the time the question was published. If it has not been pbulished, this will be null.",
+        ),
+        th.Property(
+            "randomize_responses",
+            th.BooleanType,
+            description="If this is true the order of the responses will be randomized every time the question is displayed to prevent bias in the collected responses.",
+        ),
+        th.Property(
+            "responses",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property(
+                        "clarification_question",
+                        th.ObjectType(
+                            th.Property(
+                                "allow_other",
+                                th.BooleanType,
+                                description="If true, the question allows a free-text responses as an alternative to the provided list of responses. ",
+                            ),
+                            th.Property(
+                                "id",
+                                th.NumberType,
+                                description="The unique identifier of the question. ",
+                            ),
+                            th.Property(
+                                "max_responses",
+                                th.NumberType,
+                                description="If the question type is multi_response, this is the maximum number of responses that can be provided for this question per customer. ",
+                            ),
+                            th.Property(
+                                "other_placeholder",
+                                th.StringType,
+                                description='If the question allows free text responses ("Other"), this is the placeholder text that displays in the text input in the question form. ',
+                            ),
+                            th.Property(
+                                "prompt",
+                                th.StringType,
+                                description="The text value of the question that is presented to customers. ",
+                            ),
+                            th.Property(
+                                "randomize_responses",
+                                th.BooleanType,
+                                description="If this is true the order of the responses will be randomized every time the question is displayed to prevent bias in the collected responses. ",
+                            ),
+                            th.Property(
+                                "responses",
+                                th.ArrayType(
+                                    th.ObjectType(
+                                        th.Property(
+                                            "id",
+                                            th.NumberType,
+                                            description="The unique identifier of the response. ",
+                                        ),
+                                        th.Property(
+                                            "value",
+                                            th.StringType,
+                                            description="The text value of the response that is presented to the customer. ",
+                                        ),
+                                    )
+                                ),
+                                description="For single_response or multi_response question types, a list of response objects. The difference between a response object on a question and a response object on a clarification question is that response objects on a clarification question *cannot* have a clarification_question attribute. ",
+                            ),
+                            th.Property(
+                                "submit_text",
+                                th.StringType,
+                                description="The text that is displayed on the button that submits the question form. ",
+                            ),
+                            th.Property(
+                                "type",
+                                th.StringType,
+                                description="One of single_response, multi_response, or open_ended. The single_response question type limits the customer to providing one response to the question. The multi_response type allows a customer to provide many responses, up to the limit of the max_responses value. The open_ended type allows customers to respond with free form text.",
+                            ),
+                        ),
+                        description="If the type of the question associated with this response is single_response, then the response can have follow up clarification question object. A clarification question provides a mechanism to add more detail to the response. ",
+                    ),
+                    th.Property(
+                        "id",
+                        th.NumberType,
+                        description="The unique identifier of the response. ",
+                    ),
+                    th.Property(
+                        "value",
+                        th.StringType,
+                        description="The text value of the response that is presented to the customer. ",
+                    ),
+                )
+            ),
+            description="For single_response or multi_response question types, a list of response objects.",
+        ),
+        th.Property(
+            "submit_text",
+            th.StringType,
+            description="The text that is displayed on the button that submits the question form.",
+        ),
+        th.Property(
+            "type",
+            th.StringType,
+            description="One of single_response, multi_response, or open_ended. The single_response question type limits the customer to providing one response to the question. The multi_response type allows a customer to provide many responses, up to the limit of the max_responses value. The open_ended type allows customers to respond with free form text.",
+        ),
+        th.Property(
+            "updated_at",
+            th.StringType,
+            description="ISO 8601 timestamp of the time the question was last updated.",
+        ),
+    ).to_dict()
