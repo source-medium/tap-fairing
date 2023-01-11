@@ -6,7 +6,7 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
 ### Implementation notes
 
-In v0, only the `responses` api endpoint is replicated.
+The `responses` api endpoint has incremental replication enabled. It's a bit messy:
 * `responses` are _always_ sorted like `ORDER BY inserted_at DESC`, which makes replication hard
 * to get around this, the tap searches for the oldest record after `start_date` when run with no state, and paginates forward in time from there.
 * the API URL params are somewhat confusing, but it helps to think about them like this:
@@ -16,6 +16,10 @@ In v0, only the `responses` api endpoint is replicated.
   - annoyingly, the `next` and `prev` links are present in the response as long as there are records returned in the `data` list, and are `null` when no results are returned.
 * the nitty gritty: if there's no `id` in the state, we do a binary search using `until` to find a partial page of records, which must include the oldest record. Starting from that page, we paginate forward using `before`. Each page is reversed before yielding records so they are in proper chronological order.
 * the replication key is `id` because that's what we need to start forward pagination on incremental replication, so we need it in the state. We lie to the singer sdk and say records are sorted but please don't check.
+
+The `questions` endpoint uses full table replication because the API does not support any filtering.
+
+All database `id` columns are strings.
 
 ## Installation
 

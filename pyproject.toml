@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-fairing"
-version = "0.0.1"
+version = "1.0.1"
 description = "`tap-fairing` is a Singer tap for fairing.co, built with the Meltano Singer SDK."
 authors = ["Andrew Herr"]
 keywords = [
