@@ -128,7 +128,7 @@ class ResponsesStream(FairingStream):
         ),
         th.Property(
             "question_id",
-            th.IntegerType,
+            th.StringType,
             description="The ID of the question associated with this response.",
         ),
         th.Property(
@@ -143,7 +143,7 @@ class ResponsesStream(FairingStream):
         ),
         th.Property(
             "referring_question_id",
-            th.IntegerType,
+            th.StringType,
             description="If the question associated with this response is a clarification question, the ID of the question immediately preceeding this one.",
         ),
         th.Property(
@@ -153,7 +153,7 @@ class ResponsesStream(FairingStream):
         ),
         th.Property(
             "referring_question_response_id",
-            th.IntegerType,
+            th.StringType,
             description="If the question associated with this response is a clarification question, the ID of the response provided to the question immediately preceeding this one.",
         ),
         th.Property(
@@ -168,7 +168,7 @@ class ResponsesStream(FairingStream):
         ),
         th.Property(
             "response_id",
-            th.IntegerType,
+            th.StringType,
             description="The ID of the response if it was not free-form text.",
         ),
         th.Property(
@@ -377,7 +377,8 @@ class ResponsesStream(FairingStream):
             return {"limit": self.config["page_size"]}
 
     def post_process(self, row: Dict, context: Optional[dict] = None) -> Optional[dict]:
-        """Fairing: transform the number types into floats for loading.
+        """Fairing responses: transform the number types into floats for loading, and
+        the foreign key ids to strings like in questions.
 
         As needed, append or transform raw data to match expected structure.
 
@@ -395,11 +396,21 @@ class ResponsesStream(FairingStream):
 
         Returns:
             The resulting record dict, or `None` if the record should be excluded.
+
         """
         if "order_total" in row and row["order_total"]:
             row["order_total"] = float(row["order_total"])
         if "order_total_usd" in row and row["order_total_usd"]:
             row["order_total_usd"] = float(row["order_total_usd"])
+
+        if "question_id" in row and row["question_id"]:
+            row["question_id"] = str(row["question_id"])
+        if "referring_question_id" in row and row["referring_question_id"]:
+            row["referring_question_id"] = str(row["referring_question_id"])
+        if "referring_question_response_id" in row and row["referring_question_response_id"]:
+            row["referring_question_response_id"] = str(row["referring_question_response_id"])
+        if "response_id" in row and row["response_id"]:
+            row["response_id"] = str(row["response_id"])
         return row
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
